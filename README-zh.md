@@ -16,7 +16,7 @@
 npm install ws@8.5.0
 
 # 启动信令服务器
-PORT=88 node signal.js
+node .signal.js
 
 # 启动 UE5
 start path/to/UE5.exe -PixelStreamingURL="ws://localhost:88"

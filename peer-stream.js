@@ -83,17 +83,31 @@ const SEND = {
 	GamepadAnalog: 92,
 };
 
+const TURNSERVER = {
+	useturn : true,
+	turnPort : 19201,
+	turnPublicIP : "??.??.???.???",
+	userName : "yskj",
+	credential : "yskj123",
+}
+const TURNSERVERADDRESS = TURNSERVER.useturn ? ("turn:" + TURNSERVER.turnPublicIP + ":" + TURNSERVER.turnPort) : "stun:stun1.l.google.com:19302";
 const iceServers = [
 	{
 		urls: [
 			"stun:stun.l.google.com:19302",
-			"stun:stun1.l.google.com:19302",
-			"stun:stun2.l.google.com:19302",
-			"stun:stun3.l.google.com:19302",
-			"stun:stun4.l.google.com:19302",
+			TURNSERVERADDRESS,
+		//	"stun:stun1.l.google.com:19302",
+		//	"stun:stun2.l.google.com:19302",
+		//	"stun:stun3.l.google.com:19302",
+		//	"stun:stun4.l.google.com:19302",
 		],
+		username: TURNSERVER.userName,
+        credential: TURNSERVER.credential
 	},
 ]
+console.log("iceServers: " + JSON.stringify(iceServers));
+
+// const iceTransportPolicy = "relay";
 
 class PeerStream extends HTMLVideoElement {
 	constructor() {
@@ -358,7 +372,8 @@ class PeerStream extends HTMLVideoElement {
 		this.pc = new RTCPeerConnection({
 			sdpSemantics: "unified-plan",
 			bundlePolicy: "balanced",
-			// iceServers
+			iceServers,
+			//iceTransportPolicy
 		});
 
 		this.pc.ontrack = (e) => {

@@ -3,17 +3,30 @@
 const { Server } = require('ws')
 
 global.ENGINE = new Server({ noServer: true, clientTracking: true }, () => {})
+
+const TURN = {
+	useturn : true,
+	turnPort : 19201,
+	turnPublicIP : "??.??.???.???",
+	userName : "yskj",
+	credential : "yskj123",
+}
+const TURNADDRESS = TURN.useturn ? ("turn:" + TURN.turnPublicIP + ":" + TURN.turnPort) : "stun:stun1.l.google.com:19302";
 const iceServers = [
   {
     urls: [
-      'stun:stun.l.google.com:19302',
-      'stun:stun1.l.google.com:19302',
-      'stun:stun2.l.google.com:19302',
-      'stun:stun3.l.google.com:19302',
-      'stun:stun4.l.google.com:19302',
+        "stun:stun.l.google.com:19302",
+        TURNADDRESS,
+    //  'stun:stun1.l.google.com:19302',
+    //  'stun:stun2.l.google.com:19302',
+    //  'stun:stun3.l.google.com:19302',
+    //  'stun:stun4.l.google.com:19302',
     ],
+    username: TURN.userName,
+    credential: TURN.credential
   },
 ]
+console.log("iceServers: " + JSON.stringify(iceServers));
 
 ENGINE.on('connection', (ue, req) => {
   ue.req = req
@@ -24,7 +37,7 @@ ENGINE.on('connection', (ue, req) => {
     JSON.stringify({
       type: 'config',
       peerConnectionOptions: {
-        // iceServers
+        iceServers
       },
     })
   )
